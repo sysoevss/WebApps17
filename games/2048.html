@@ -1,0 +1,123 @@
+<html>
+    <head>
+        <script src="/games/game.js"></script>
+        <style type = "text/css">
+        #main {
+            width: 400px;
+            height: 400px;
+            text-align: center;
+            display: none;
+            -webkit-user-select: none;
+            /*border: 1px groove red;*/
+            }
+        #field {
+                width: 80%;
+                height: 80%;
+                /*border: 1px groove blue;*/
+                position: relative;
+                float: left;
+            }
+            #field div {
+                border: 2px solid grey;
+                position: absolute;
+            }
+        .control {background-color: #00BFFF;
+                 color: #000000; 
+                 /*border: 2px solid #ffffff;*/
+                 text-align: center;
+                -webkit-user-select: none;
+                }
+        .hor {
+                height: 10%;
+                width: 80%;
+                margin: 0 auto;
+            }
+        .vert {
+                float: left;
+                width: 10%;
+                height: 80%;
+                margin: 0;
+            }
+        .pholder {background-color: #FFFFFF; 
+                 color: #000000; 
+                 border: 2px solid #ffffff;
+                }
+        div[data-score="2"] {background-color: #C0C0C0; 
+                 color: #000000; 
+                 border: 1px solid #a0a0a0;
+                
+                }
+        .empty {background-color: #FFFFFF; 
+                 color: #00BFFF; 
+                 float: left; 
+                 border: 1px solid #a0a0a0;
+                 text-align: center;
+                -webkit-user-select: none;
+                }
+        </style>
+        
+        <script>
+            $(function () {
+                //f = new Field(4,4)
+                //f.spawnTest() 
+                $("#button_up").click(function(event) {
+                    window.field.up();
+                });
+                $("#button_down").click(function(event) {
+                    window.field.down();
+                });
+                $("#button_left").click(function(event) {
+                    window.field.left();
+                });
+                $("#button_right").click(function(event) {
+                    window.field.right();
+                });
+                $(document).keydown(function (e) {
+                    if (e.keyCode == '38') {
+                        $("#button_up").click();
+                    }
+                    else if (e.keyCode == '40') {
+                        $("#button_down").click();
+                    }
+                    else if (e.keyCode == '37') {
+                       $("#button_left").click();
+                    }
+                    else if (e.keyCode == '39') {
+                       $("#button_right").click();
+                    }                                 
+                });
+                $("form").submit(function(e) {
+                    e.preventDefault();
+                    $('#main').show();
+                    $('#field').html('');
+                    width = parseInt($("#width").val());
+                    height = parseInt($("#height").val());
+                    window.field = new Field(width, height);
+                    window.field.spawn();
+                    return false;
+                });
+            });
+        </script>
+    </head>
+
+    <body>
+        <form>
+            Width: <input type="number" id="width" min="4" max="10">
+            Height: <input type="number" id="height" min="4" max="10">
+            <input type="submit" id="form_submit" value="Create">
+        </form>
+        <section id="main">
+            <!-- Pholders was removed, float: left is unnecessary here... -->
+            <div id="button_up" class="control hor"></div>
+            <!-- ...but still necessary here -->
+            <div id="button_left" class="control vert" style="float:left;"></div>
+            <div id="field" style="float:left;">
+                <!-- Blocks will be inserted here -->
+            </div>
+            <div id="button_right" class="control vert" style="float:left;"></div>
+            <div style="clear: both;"></div>
+            <div id="button_down" class="control hor"></div>
+        </section>
+
+    </body>
+</html>

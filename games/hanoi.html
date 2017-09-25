@@ -1,0 +1,104 @@
+<html>
+<head>
+<style type = "text/css">
+.field  { 
+		 height: auto; 
+		 overflow:auto;
+		 position: relative;
+		}
+.tower  { 
+		 background-color: #ffffff; 
+		 float: left; 
+		 width: 120px;
+		 margin: auto;
+		}
+.piece  {
+		 background-color: #00BFFF; 
+		 border: 1px solid #000000;
+		 margin: auto;
+		 height: 20px;
+		}
+.chosen_piece  {
+		 background-color: #FF0000; 
+		 border: 1px solid #000000;
+		 margin: auto;
+		 height: 20px;
+		}
+.shaft  {
+		 background-color: #00FFBF; 
+		 border: 1px solid #000000;
+		 margin: auto;
+		 width: 5px;
+		 height: 20px;
+		}
+.basement {background-color: #000000; 
+		 width: 360px;
+		 height: 20px;
+		}
+.clear { clear:both; }		
+</style>
+
+<script>
+
+$(function() {
+	$("#form_submit").click(function(e) {
+		var j, width, height;
+		e.preventDefault();
+		$("div[class='piece']").remove();
+		$("div[class='shaft']").remove();
+		for (j = 0; j < $("#height").val(); j++) {
+			width = 20 + j * 5;
+			$("#tower1").append('<div class="piece" name="brick" id="1.' + j + '" style="width: ' + width + 'px; height: 20px;" ></div>');
+			$("#tower2").append('<div class="shaft" name="brick" id="2.' + j + '"></div>');
+			$("#tower3").append('<div class="shaft" name="brick" id="3.' + j + '"></div>');
+		}
+		$("div[name='brick']").click(function() {
+			tow = parseInt($(this).attr('id').split('.')[0]);
+			num = parseInt($(this).attr('id').split('.')[1]);
+			if ($(this).hasClass("piece")) {
+				$(".piece").removeClass('chosen_piece');
+				if (num == 0 || $("#" + tow + "\\." + (num-1)).hasClass('shaft'))
+				$(this).addClass('chosen_piece');
+			} else if ($(this).hasClass("shaft")) {
+				if ($(".chosen_piece").length == 0)
+					return;
+				if (num != $("#height").val() - 1) {
+					next_piece = $("#" + tow + "\\." + (num+1));
+					if (!next_piece.hasClass('piece'))
+						return;
+					if (next_piece.width() < $(".chosen_piece").width())
+						return;
+				}
+				$(this).removeClass('shaft');
+				$(this).addClass('piece');
+				$(this).width($(".chosen_piece").width());
+				$(".chosen_piece").removeClass("piece");
+				$(".chosen_piece").addClass("shaft");
+				$(".chosen_piece").width(5);
+				$(".chosen_piece").removeClass("chosen_piece");
+			}
+		});
+	});
+	
+
+});
+</script>
+
+</head>
+
+<body>
+<form id="main">
+Towers Height: <input type="number" id="height" min="1" max="16">
+<input type="submit" id="form_submit" value="Create">
+</form>
+
+<div class="field">
+<div id="tower1" class="tower"></div>
+<div id="tower2" class="tower"></div>
+<div id="tower3" class="tower"></div>
+<div class="clear"></div>
+<div class="basement"></div>
+</div>
+
+</body>
+</html>

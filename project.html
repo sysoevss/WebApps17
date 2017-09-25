@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>ServiceDesk</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Styles -->
+  
+  <link href="/css/bootstrap.css" rel="stylesheet">
+  <style>
+    body {
+      padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+    }
+
+    select.btn-mini {
+      height: auto;
+      line-height: 14px;
+      font-size: 12px;
+      width: 130px;
+    }
+
+    select.btn {
+      -webkit-appearance: button;
+      -moz-appearance: button;
+      appearance: button;
+      padding-right: 16px;
+    }
+
+    input.btn-mini {
+      height: auto;
+      line-height: 14px;
+      font-size: 12px;
+      width: 115px;
+    }
+
+    .navbar-inverse .brand, .navbar-inverse .nav > li > a {
+      color: #ffffff;
+      text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    }
+
+    .navbar-inverse .nav .active > a, .navbar-inverse .nav .active > a:hover, .navbar-inverse .nav .active > a:focus {
+      text-decoration: underline;
+      font-size: 120%;
+    }
+
+    .table tbody tr.info td {
+      background-color: #ffffff;
+    }
+  </style>
+  <link href="/css/bootstrap-responsive.css" rel="stylesheet">
+
+  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <script type="text/javascript" src="/js/jquery-1.8.2.min.js"></script>
+  <script type="text/javascript" src="/js/project.js"></script>
+
+</head>
+
+<body>
+<div id="all_content" style="display:none;">
+  <!-- NAVBAR -->
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container-fluid" id="nav_container">
+        <a class="brand" href="#" style="color:#0088cc">ServiceDesk</a>
+        <div class="nav-collapse collapse">
+          <ul class="nav" id="main_menu">
+            <li class="active"><a href="#" id="projects">Проекты</a></li>
+            {% if isAdmin %}
+            <li><a href="#" id="users">Пользователи</a></li>
+            <li><a href="#" id="allprojects">Все проекты</a></li>
+            {% endif %}
+            <li><a href="#" id="games">Игры</a></li>
+            <li><a href="#" id="reference">Справка</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+  </div>
+
+  <!-- The main container -->
+  <div class="container-fluid" id="main_container">
+    <!-- The main table -->
+    <table class="table">
+      <tr class="success">
+        <td>
+          <!-- Projects TAB -->
+          <div class="inner" id="projects_container" style="display:block;">
+            <div id="projects_content" class="content" style="display:block;">
+              <h2 style="line-height:15px;">
+                <small>Проекты</small>
+              </h2>
+              <table class="table table-bordered" id="projects_table">
+                <thead>
+                <tr>
+                  <th><b>Имя</b></th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% for p in projects %}
+                <tr>
+                  <td style="display:none" class="project_key">{{p.key}}</td>
+                  <td class="project_name">{{ p.name }}</td>
+                </tr>
+                {% endfor %}
+
+                </tbody>
+				
+              </table>
+            </div>
+          </div> <!-- /container -->
+        
+        {% if isAdmin %}
+          <!-- All Projects TAB -->
+          <div class="inner" id="allprojects_container" style="display:None;">
+            <div id="allprojects_content" class="content" style="display:block;">
+              <h2 style="line-height:15px;">
+                <small>Список проектов</small>
+              </h2>
+              <table class="table table-bordered" id="allprojects_table">
+                <thead>
+                <tr>
+                  <th><b>Имя</b></th>
+                  <td></td>
+                </tr>
+                <tr class="warning">
+                  <td><input class="btn-mini" id="new_project_name" type="text" style="width:90%;" /></td>
+                  <td><a class="btn-small btn-success" href="#" id='add_project' title="Add"><i
+                      class="icon-plus"></i></a></td>
+                </tr>
+				
+				 <!--Edit project - class for clone-->
+				<tr class="project_edit warning" style="display:none">
+				<td style="display:none">
+				  <input type="hidden" class="project_key">
+				</td>
+				  <td>
+				<input style="width:90%" type="text" class="btn-mini project_name">
+				 </td>
+				 <td>
+                <a class="btn-small btn-success accept_project_changes" href="#" title="Принять">
+                  <i class="icon-ok"></i></a>
+                <a class="btn-small btn-danger cancel_project_changes" href="#" title="Отмена">
+                  <i class="icon-remove"></i></a>
+				  </td>
+				</tr>
+				
+                </thead>
+                <tbody>
+
+                {% for p in allprojects %}
+                <tr>
+                  <td style="display:none" class="project_key">{{p.key}}</td>
+                  <td class="project_name">{{ p.name }}</td>
+                  <td>
+                    <a class="btn-small btn-warning delete_project" href="#" title="Delete project">
+                      <i class="icon-trash"></i></a>
+                    <a class="btn-small btn-warning edit_project" href="#" title="Edit project">
+                      <i class="icon-pencil"></i></a>
+                  </td>
+                </tr>
+                {% endfor %}
+
+                </tbody>
+				
+              </table>
+            </div>
+          </div> <!-- /container -->
+          
+          <!-- Users TAB -->
+          <div id="old_email" style="display:None;"></div>
+          <div id="old_active" style="display:None;"></div>
+          <div class="inner" id="users_container" style="display:None;">
+            <div id="users_content" class="content" style="display:block;">
+              <h2 style="line-height:15px;">
+                <small>Список пользователей</small>
+              </h2>
+              <table class="table table-bordered" id="users_table">
+                <thead>
+                <tr>
+                  <th><b>Логин</b></th>
+                  <th><b>E-mail</b></th>
+                  <th><b>Активен</b></th>
+                  <td></td>
+                </tr>
+                <!-- USER Add Form -->
+                <tr class="warning">
+                  <td><input class="btn-mini" id="new_user_name" type="text" style="width:40%;" /></td>
+                  <td><input class="btn-mini" id="new_user_email" type="text" style="width:40%;" /></td>
+                  <td/>
+                  <td><a class="btn-small btn-success" href="#" id='add_user' title="Add"><i
+                      class="icon-plus"></i></a></td>
+                </tr>
+                <!-- USER Template -->
+                <tr class="user_template" style="display:None;">
+                    <td style="display:none" class="user_key"></td>
+                    <td class="user_name"></td>
+                    <td class="user_email"></td>
+                    <td class="user_active">да</td>
+                    <td>
+                        <a class="btn-small btn-warning edit_user" href="#" title="Редактировать">
+                            <i class="icon-pencil"></i></a>
+                    </td>
+                </tr>
+				
+				 <!--Edit user - class for clone-->
+				<tr class="user_edit warning" style="display:none">
+				<td class="user_key" style="display:none"></td>
+				<td class="user_name"></td>
+				<td><input type="text" class="btn-mini user_email"></td>
+				<td><input type="checkbox" class="btn-mini user_active"></td>
+				<td>
+                    <a class="btn-small btn-success accept_user_changes" href="#" title="Принять">
+                        <i class="icon-ok"></i></a>
+                    <a class="btn-small btn-danger cancel_user_changes" href="#" title="Отмена">
+                        <i class="icon-remove"></i></a>
+				</td>
+				</tr>
+				
+                </thead>
+                <tbody>
+
+                {% for u in users %}
+                <tr>
+                  <td style="display:none" class="user_key">{{u.key}}</td>
+                  <td class="user_name">{{ u.username }}</td>
+                  <td class="user_email">{{ u.email }}</td>
+                  {% if u.active %}
+                        <td class="user_active">да</td>
+                  {% else %}
+                        <td class="user_active"></td>
+                  {% endif %}
+                  <td>
+                    <a class="btn-small btn-warning edit_user" href="#" title="Редактировать">
+                      <i class="icon-pencil"></i></a>
+                  </td>
+                </tr>
+                {% endfor %}
+
+                </tbody>
+				
+              </table>
+            </div>
+          </div> <!-- /container -->
+          {% endif %}
+
+          <!-- GAMES TAB -->
+          <div class="inner" id="games_container" style="display:none;">
+            <div id="games_content" class="content" style="display:block;">
+              <h2 style="line-height:15px;">
+                <small>Игры</small>
+              </h2>
+
+              <table class="table-bordered" style="width:900px;" id="ph">
+               	<tr>
+					<td><button type="button" onclick="loadGame('/games/minesweeper.html')">Сапер</button></td>
+				</tr>
+				<tr>
+					<td><button type="button" onclick="loadGame('/games/hanoi.html')">Ханойская башня</button></td>
+				</tr>		
+				<tr>
+					<td><button type="button" onclick="loadGame('/games/2048.html')">2048</button></td>
+				</tr>	
+              </table>
+			  <div id="game">Выберите игру</div>
+            </div>
+          </div>
+
+          <!-- Reference TAB -->
+          <div class="inner" id="reference_container" style="display:none;">
+            <div id="reference_content" class="content" style="display:block;">
+              <h2 style="line-height:15px;">
+                <small>Краткая справка.</small>
+              </h2>
+              <p>Тыкайте в кнопки и смотрите, что получается</p>
+            </div>
+          </div>
+        </td>
+      </tr>
+
+
+    </table>
+  </div> <!-- /container -->
+
+  <div class="container-fluid">
+    <small>&copy; Copyright 2017 Web Applications Development Course, SPBU</small>
+  </div>
+
+</div>
+</body>
+</html>

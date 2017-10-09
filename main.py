@@ -73,6 +73,8 @@ class ObjectAdd(webapp2.RequestHandler):
                 return
             username = self.request.get('username')
             email = self.request.get('email')
+            #self.response.out.write(username)
+            #return
             chk = myusers.myuser.all().filter("username = ", username).get()
             if chk:
                 self.error(400)
@@ -81,6 +83,15 @@ class ObjectAdd(webapp2.RequestHandler):
                 key = myusers.session(self).create_user(email, username, username)
                 self.response.out.write(str(key))
                 return
+                
+        if object_type == 'project':
+            if not users.is_current_user_admin():
+                self.error(400)
+                return
+            project_name = self.request.get('name')
+            key = data.addProject(project_name)
+            self.response.out.write(str(key))
+            return
 
         self.error(400)
 
@@ -95,7 +106,13 @@ class ObjectUpdate(webapp2.RequestHandler):
             myusers.updateUser(key, email, active)
             self.response.out.write('OK')
             return
-
+        if object_type == "project":
+            key = self.request.get('key')
+            name = self.request.get('name')
+            data.updateProject(key, name)
+            self.response.out.write('OK')
+            return
+            
         self.error(400)
 
 

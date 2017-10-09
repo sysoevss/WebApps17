@@ -99,7 +99,8 @@
                 <thead>
                 <tr>
                   <th><b>Имя</b></th>
-                </tr>
+                  <td></td>
+                </tr>				
                 </thead>
                 <tbody>
 
@@ -118,6 +119,7 @@
         
         {% if isAdmin %}
           <!-- All Projects TAB -->
+          <div id="old_projectname" style="display:None;"></div>
           <div class="inner" id="allprojects_container" style="display:None;">
             <div id="allprojects_content" class="content" style="display:block;">
               <h2 style="line-height:15px;">
@@ -126,29 +128,35 @@
               <table class="table table-bordered" id="allprojects_table">
                 <thead>
                 <tr>
-                  <th><b>Имя</b></th>
+                  <th><b>Имя проекта</b></th>
                   <td></td>
                 </tr>
+                <!-- Project Add Form -->
                 <tr class="warning">
-                  <td><input class="btn-mini" id="new_project_name" type="text" style="width:90%;" /></td>
-                  <td><a class="btn-small btn-success" href="#" id='add_project' title="Add"><i
+                  <td><input class="btn-mini" id="new_project_name" type="text" style="width:80%;" /></td>
+                  <td><a class="btn-small btn-success" href="#" id='add_project' title="Добавить"><i
                       class="icon-plus"></i></a></td>
+                </tr>
+                <!-- PROJECT Template -->
+                <tr class="project_template" style="display:None;">
+                    <td style="display:none" class="allproject_key"></td>
+                    <td class="allproject_name"></td>
+                    <td>
+                        <a class="btn-small btn-warning edit_project" href="#" title="Редактировать">
+                            <i class="icon-pencil"></i></a>
+                    </td>
                 </tr>
 				
 				 <!--Edit project - class for clone-->
 				<tr class="project_edit warning" style="display:none">
-				<td style="display:none">
-				  <input type="hidden" class="project_key">
+				<td class="allproject_key" style="display:none"></td>
+				<td><input type="text" class="btn-mini allproject_name" style="width:80%;"></td>
+				<td>
+                    <a class="btn-small btn-success accept_project_changes" href="#" title="Принять">
+                        <i class="icon-ok"></i></a>
+                    <a class="btn-small btn-danger cancel_project_changes" href="#" title="Отмена">
+                        <i class="icon-remove"></i></a>
 				</td>
-				  <td>
-				<input style="width:90%" type="text" class="btn-mini project_name">
-				 </td>
-				 <td>
-                <a class="btn-small btn-success accept_project_changes" href="#" title="Принять">
-                  <i class="icon-ok"></i></a>
-                <a class="btn-small btn-danger cancel_project_changes" href="#" title="Отмена">
-                  <i class="icon-remove"></i></a>
-				  </td>
 				</tr>
 				
                 </thead>
@@ -156,12 +164,10 @@
 
                 {% for p in allprojects %}
                 <tr>
-                  <td style="display:none" class="project_key">{{p.key}}</td>
-                  <td class="project_name">{{ p.name }}</td>
+                  <td style="display:none" class="allproject_key">{{p.key}}</td>
+                  <td class="allproject_name">{{ p.name }}</td>
                   <td>
-                    <a class="btn-small btn-warning delete_project" href="#" title="Delete project">
-                      <i class="icon-trash"></i></a>
-                    <a class="btn-small btn-warning edit_project" href="#" title="Edit project">
+                    <a class="btn-small btn-warning edit_project" href="#" title="Редактировать">
                       <i class="icon-pencil"></i></a>
                   </td>
                 </tr>
@@ -170,8 +176,8 @@
                 </tbody>
 				
               </table>
-            </div>
-          </div> <!-- /container -->
+            </div> 
+          </div> <!-- ALLPROJECTS /container -->
           
           <!-- Users TAB -->
           <div id="old_email" style="display:None;"></div>
@@ -246,8 +252,8 @@
                 </tbody>
 				
               </table>
-            </div>
-          </div> <!-- /container -->
+            </div> 
+          </div> <!-- USERS /container -->
           {% endif %}
 
           <!-- GAMES TAB -->
@@ -266,6 +272,9 @@
 				</tr>		
 				<tr>
 					<td><button type="button" onclick="loadGame('/games/2048.html')">2048</button></td>
+				</tr>	
+                <tr>
+					<td><button type="button" onclick="loadGame('/games/snake.html')">Питон</button></td>
 				</tr>	
               </table>
 			  <div id="game">Выберите игру</div>

@@ -31,8 +31,8 @@ def updateProject(key, name):
     p.put()
 
 def addProject(name):
-    p = Project();
-    p.name = name;
+    p = Project()
+    p.name = name
     p.put()
-    return p.key();
+    return p.key()
     

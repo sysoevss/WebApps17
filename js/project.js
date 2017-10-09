@@ -21,6 +21,25 @@ $(document).ready(function () {
 
     });
 
+ // add project
+    $("#add_project").click(function (e) {
+        e.preventDefault();
+        var $thisTr = $(this).parent().parent();
+        project_name = $("#new_project_name").val();
+        $.post("/object_add/", {object_type: "project", project_name: project_name}, function (data) {
+            // var $newTr = $("#users_table").find(".user_template").clone(true, true);
+            // $newTr.find("td.user_key").text(data);
+            // $newTr.find("td.user_name").text(user_name);
+            // $newTr.find("td.user_email").text(user_email);
+            // $newTr.removeAttr("style").removeAttr("class");
+            // $newTr.prependTo("#users_table tbody");
+            
+            // $("#new_user_name").val("");
+            // $("#new_user_email").val("");
+        }).fail(function () {alert("Пользователь уже зарегистрирован.")});
+        
+    });
+ 
  
     //
     //
@@ -79,7 +98,7 @@ $(document).ready(function () {
         } else {
             $cb.prop('checked', false);
         }
-		$form.removeAttr("style").removeClass("client_edit");
+		$form.removeAttr("style").removeClass("user_edit");
         
         // insert the form instead of the object
         $form.insertAfter($thisTr);
@@ -143,6 +162,109 @@ $(document).ready(function () {
             $newTr.find("td.user_name").text(username);
             $newTr.find("td.user_email").text(email);
             $newTr.find("td.user_active").text(active);
+            $newTr.removeAttr("style").removeAttr("class");
+            $newTr.insertAfter($thisTr);
+            $thisTr.remove();
+        }).fail(function () {
+            alert("Не удалось обновить объект.")
+        })        
+    });
+    
+    //
+    //
+    //
+    // Projects Tab
+    //
+    //
+    //
+
+    //
+    // add project
+    $("#add_project").click(function (e) {
+        e.preventDefault();
+        var $thisTr = $(this).parent().parent();
+        project_name = $("#new_project_name").val();
+        if (!project_name || project_name == "") {
+            alert("Имя проекта не может быть пустым!");
+            return;
+        }
+        $.post("/object_add/", {object_type: "project", name: project_name}, function (data) {
+            var $newTr = $("#allprojects_table").find(".project_template").clone(true, true);
+            $newTr.find("td.allproject_key").text(data);
+            $newTr.find("td.allproject_name").text(project_name);
+            $newTr.removeAttr("style").removeAttr("class");
+            $newTr.prependTo("#allprojects_table tbody");
+            
+            $("#new_project_name").val("");
+        }).fail(function () {alert("Не удалось добавить проект.")});
+        
+    });
+
+    //
+    // edit project
+    $("#allprojects_table").find(".edit_project").click(function (e) {
+        e.preventDefault();
+        $(".edit_project").hide();
+        var $thisTr = $(this).parent().parent();
+        
+        // get the values
+        var key = $thisTr.find("td.allproject_key").text();
+        var name = $thisTr.find("td.allproject_name").text();
+        
+        // prepare the input form
+        var $form = $("#allprojects_table").find(".project_edit").clone(true,true);
+        $form.find("td.allproject_key").text(key);
+		$form.find("input.allproject_name").val(name);
+		$form.removeAttr("style").removeClass("project_edit");
+        
+        // insert the form instead of the object
+        $form.insertAfter($thisTr);
+        $thisTr.remove();
+        // save old values for "cancel" action
+        $("#old_projectname").html(name);
+    });
+
+    //
+    // Cancel edit (PROJECT)
+    $(".project_edit").find(".cancel_project_changes").click(function (e) {
+        e.preventDefault();
+        $(".edit_project").show();
+        var $thisTr = $(this).parent().parent();
+        
+        // get the values
+        var key = $thisTr.find("td.allproject_key").text();
+        var name = $("#old_projectname").html();
+        
+        // set the old values back
+        var $newTr = $("#allprojects_table").find(".project_template").clone(true, true);
+        $newTr.find("td.allproject_key").text(key);
+        $newTr.find("td.allproject_name").text(name);
+        $newTr.removeAttr("style").removeAttr("class");
+        $newTr.insertAfter($thisTr);
+        $thisTr.remove();
+    });
+
+    //
+    // Accept edit (PROJECT)
+    $(".project_edit").find(".accept_project_changes").click(function (e) {
+        e.preventDefault();
+        $(".edit_project").show();
+        var $thisTr = $(this).parent().parent();
+        
+        // get the values
+        var key = $thisTr.find("td.allproject_key").text();
+        var name = $thisTr.find("input.allproject_name").val();
+        
+        // post the new values to the server
+        $.post("/object_update/", {
+            object_type: "project",
+            key: key,
+            name: name
+        }, function () {
+            // update the table
+            var $newTr = $("#allprojects_table").find(".project_template").clone(true, true);
+            $newTr.find("td.allproject_key").text(key);
+            $newTr.find("td.allproject_name").text(name);
             $newTr.removeAttr("style").removeAttr("class");
             $newTr.insertAfter($thisTr);
             $thisTr.remove();

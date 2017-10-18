@@ -48,6 +48,19 @@ class AdminLogin(webapp2.RequestHandler):
             login_page = users.create_login_url('/')
             self.redirect(login_page)
             
+class CheckUserPassword(webapp2.RequestHandler):
+    def get(self):
+        user = myusers.session(self).get_current_user()
+        user_pass = self.request.get('pass')
+        db_pass = user.password
+        self.response.out.write(str(user_pass==db_pass))
+        return
+
+class GetUserPassword(webapp2.RequestHandler):
+    def get(self):
+        key = self.request.get('key')
+        self.response.out.write(myusers.getPassword(key))
+
 class ObjectList(webapp2.RequestHandler):
     def get(self):
 
@@ -112,9 +125,25 @@ class ObjectUpdate(webapp2.RequestHandler):
             data.updateProject(key, name)
             self.response.out.write('OK')
             return
-            
+        if object_type == "password":
+            key = self.request.get('key')
+            passw = self.request.get('pass')
+            if not myusers.session(self).updatePassword(key, passw):
+                self.error(400)
+                return
+            self.response.out.write('OK')
+            return
+
         self.error(400)
 
+class UpdateCurrUserPass(webapp2.RequestHandler):
+    def get(self):
+        user = myusers.session(self).get_current_user()
+        passw = self.request.get('pass')
+        user.password = passw
+        user.put()
+        self.response.out.write('OK')
+        return
 
 application = webapp2.WSGIApplication([('/', MainPage),
                                        ('/login', myusers.Login),
@@ -122,5 +151,8 @@ application = webapp2.WSGIApplication([('/', MainPage),
                                        ('/admin', AdminLogin),
                                        ('/object_add/', ObjectAdd),
                                        ('/object_list/', ObjectList),
-                                       ('/object_update/', ObjectUpdate)],
+                                       ('/object_update/', ObjectUpdate),
+                                       ('/check_user_password/', CheckUserPassword),
+                                       ('/get_user_password/', GetUserPassword),
+                                       ('/update_curr_user_pass/', UpdateCurrUserPass)],
                                       debug=True)

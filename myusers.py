@@ -17,10 +17,10 @@
 
 from google.appengine.ext import db 
 import webapp2 
-from google.appengine.ext.webapp import template 
+from google.appengine.ext.webapp import template
 
 import os 
-import uuid 
+import uuid
     
 class myuser(db.Model): 
     email = db.EmailProperty() 
@@ -37,44 +37,59 @@ def updateUser(key, email, active):
     user.active = active
     user.put()
 
+def getPassword(key):
+    user = myuser.get(key)
+    if not user:
+        return
+    return user.password
+
 class session: 
-    def __init__(self,handler): 
-        """Requires a webapp requesthandler passed as a constructor""" 
+    def __init__(self,handler):
+        """Requires a webapp requesthandler passed as a constructor"""
         self.handler = handler 
-        self.session_id = None 
+        self.session_id = None
+
+    def updatePassword(self, key, password):
+        user = myuser.get(key)
+        if not user:
+            return False
+        user.password = password
+        self._sync_user(user)
+        user.put()
+        return True
 
     def create_user(self, email, username, password): 
-        """Create a new user in the datastore""" 
-        tmp = myuser(key_name=username.lower()) 
-        tmp.username = username 
-        tmp.email = email 
-        tmp.password = password 
+        """Create a new user in the datastore"""
+        tmp = myuser(key_name=username.lower())
+        tmp.username = username
+        tmp.email = email
+        tmp.password = password
         tmp.active = True
         self._sync_user(tmp) 
         return tmp.key()
 
-    def get_current_user(self): 
+    def get_current_user(self):
         """Returns the currently logged in user or "None" if no session""" 
         return self._fetch_user_by_cookie() 
 
     def grab_login(self, username, password): 
-        """Generates a session for the user if user/pass match database""" 
+        """Generates a session for the user if user/pass match database"""
         tmp = self._fetch_user_with_pass(username,password) 
         if tmp: 
             self._sync_user(tmp) 
         return tmp 
 
     def logout(self): 
-        """Logout the logged in user""" 
+        """Logout the logged in user"""
         user = self._fetch_user_by_cookie() 
         if user: 
             user.session_id = None 
             user.put() 
 
-    def _gen_session_id(self): 
+    def _gen_session_id(self):
         return uuid.uuid4() 
 
-    def _sync_user(self, _user): 
+    def _sync_user(self, _user):
         sid = str(self._gen_session_id()) 
         ssid = 'ssid=' + sid 
         self.handler.response.headers.add_header('Set-Cookie',ssid) 
@@ -82,7 +97,7 @@ class session:
         self.session_id = sid 
         _user.put() 
 
-    def _fetch_user_by_cookie(self): 
+    def _fetch_user_by_cookie(self):
         if not self.session_id: 
             try: 
                 sid = self.handler.request.cookies['ssid'] 
@@ -96,7 +111,7 @@ class session:
         data = myuser.all().filter('session_id = ', sid).get() 
         return data 
 
-    def _fetch_user_with_pass(self,u,p): 
+    def _fetch_user_with_pass(self,u,p):
         tmp = myuser.get_by_key_name(u.lower()) 
         if not tmp: return None 
         if tmp.password != p: return None 
@@ -104,7 +119,7 @@ class session:
         return tmp 
 
 class Login(webapp2.RequestHandler): 
-    def get(self): 
+    def get(self):
         user = session(self).get_current_user() 
         if user: 
             self.redirect('/')
@@ -113,7 +128,7 @@ class Login(webapp2.RequestHandler):
             path = os.path.join(os.path.dirname(__file__), 'login.html') 
             self.response.out.write(template.render(path, variables)) 
 
-    def post(self): 
+    def post(self):
         u = self.request.get('user') 
         p = self.request.get('pass') 
         tmp = session(self).grab_login(u,p) 
@@ -126,7 +141,7 @@ class Login(webapp2.RequestHandler):
         else: 
             self.redirect('/') 
 
-class DoLogout(webapp2.RequestHandler): 
-    def get(self): 
+class DoLogout(webapp2.RequestHandler):
+    def get(self):
         session(self).logout() 
         self.redirect('/login') 

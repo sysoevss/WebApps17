@@ -76,6 +76,7 @@
             <li><a href="#" id="allprojects">Все проекты</a></li>
             {% endif %}
             <li><a href="#" id="games">Игры</a></li>
+            <li><a href="#" id="changePassword">Изменить пароль</a></li>
             <li><a href="#" id="reference">Справка</a></li>
           </ul>
         </div><!--/.nav-collapse -->
@@ -235,7 +236,7 @@
                 {% for u in users %}
                 <tr>
                   <td style="display:none" class="user_key">{{u.key}}</td>
-                  <td class="user_name">{{ u.username }}</td>
+                  <td class="user_name" onclick="displayAccount(this)">{{ u.username }}</td>
                   <td class="user_email">{{ u.email }}</td>
                   {% if u.active %}
                         <td class="user_active">да</td>
@@ -280,6 +281,69 @@
 			  <div id="game">Выберите игру</div>
             </div>
           </div>
+
+          <!-- CHANGEPASSWORD TAB -->
+          <div class="inner" id="changePassword_container" style="display:none;">
+            <div id="changepassword_content" class="content" style="display:block;">
+              <h2 style="line-height:15px;">
+                <small>Изменить пароль</small>
+              </h2>
+              <table class="table-bordered" id="changepassword_table">
+                <thead>
+                <tr>
+                  <th><b>Старый пароль</b></th>
+                  <td><input class="btn-mini" id="old_password_input" type="password" style="width:90%;" /></td>
+                </tr>
+                </thead>
+                <thead>
+                <tr>
+                  <th><b>Новый пароль</b></th>
+                  <td><input class="btn-mini" id="new_password_input" type="password" style="width:90%;" /></td>
+                </tr>
+                <tr>
+                  <th><b>Подтверждение</b></th>
+                  <td><input class="btn-mini" id="accept_password_input" type="password" style="width:90%;" /></td>
+                </tr>
+                </thead>
+              </table>
+              <button type="button" onclick="saveNewPassword()">Сохранить</button>
+              <button type="button" onclick="cancelNewPassword()">Отмена</button>
+            </div>
+          </div>
+
+          <!-- Account -->
+          <div class="inner" id="account_container" style="display:None;">
+            <div id="account_content" class="content" style="display:block;">
+              <h2 style="line-height:15px;">
+                <small>Личный кабинет</small>
+              </h2>
+              <table class="table-bordered" id="account_table">
+                <thead>
+                <tr>
+                  <th><b>Логин</b></th>
+                  <th id="account_name"></th>
+                </tr>
+                </thead>
+                <thead>
+                <tr>
+                  <th><b>Пароль</b></th>
+                  <td><input class="btn-mini" id="account_password_input" type="text" style="width:90%;" /></td>
+                </tr>
+                <tr>
+                  <th><b>E-mail</b></th>
+                  <td><input class="btn-mini" id="account_email_input" type="text" style="width:90%;" /></td>
+                </tr>
+                <tr>
+                  <th><b>Активность</b></th>
+                  <td><input type="checkbox" class="btn-mini" id="account_active_input" style="width:90%;" /></td>
+                </tr>
+                </thead>
+                <tr>
+					<td><button type="button" onclick="accountSave(this)">Сохранить</button></td>
+				</tr>
+              </table>
+            </div>
+          </div> <!-- ACCOUNT /container -->
 
           <!-- Reference TAB -->
           <div class="inner" id="reference_container" style="display:none;">

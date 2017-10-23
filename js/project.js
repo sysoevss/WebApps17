@@ -286,3 +286,94 @@ $(document).ready(function () {
 function loadGame(link){
 	$("#game").load(link);
 }
+
+function saveNewPassword(){
+  var oldPassword = $('#old_password_input').val();
+  var newPassword = $('#new_password_input').val();
+  var acceptPassword = $('#accept_password_input').val();
+  var isOldPasswordCorrect;
+
+  jQuery.ajax({
+        url: '/check_user_password/?pass=' + oldPassword,
+        success: function (data) {
+        if (data!="True") {
+            alert("Неверный старый пароль.");
+            return;
+        }
+    },
+        async: false,
+        type: "get"
+    });
+
+  if (newPassword!=acceptPassword) {
+      alert("Новый пароль и подтверждение не совпадают.");
+      return;
+  }
+
+  $.get( "/update_curr_user_pass/", {pass: newPassword}, function( data ) {
+    $('#old_password_input').val("");
+    $('#new_password_input').val("");
+    $('#accept_password_input').val("");
+  });
+}
+
+function cancelNewPassword(){
+	$("#projects").trigger("click");
+}
+
+function displayAccount(elem){
+	$(".nav#main_menu > li").removeClass("active");
+    $(".inner").hide();
+
+    var thisTr = $(elem).parent();
+    var key = thisTr.find("td.user_key").text();
+    var email = thisTr.find("td.user_email").text();
+    var active = thisTr.find("td.user_active").text();
+    var name = thisTr.find("td.user_name").text();
+
+    $("#account_container").show();
+
+    $("#account_name").text(name);
+    $("#account_email_input").val(email);
+    $("#account_active_input").prop('checked', active=="да");
+    $.get( "/get_user_password/", {"key": key}, function( data ) {
+        $("#account_password_input").val(data);
+    });
+
+    $("#account_container").data("user_key", key);
+    $("#account_container").data("user", thisTr);
+}
+
+function accountSave(elem){
+    var key = $("#account_container").data("user_key");
+    var userTr = $("#account_container").data("user");
+    var name = $("#account_name").text();
+    var email = $('#account_email_input').val();
+    var pass = $("#account_password_input").val();
+    var active = "";
+    if ($("#account_active_input").is(":checked")) {
+        console.log("YES");
+        active = "да";
+    }
+
+    $.post("/object_update/", {
+        object_type: "user",
+        key: key,
+        email: email,
+        active: active
+    }, function () {
+    }).fail(function () {
+        alert("Не удалось обновить объект.")
+    })
+
+    $.post("/object_update/", {
+        object_type: "password",
+        key: key,
+        pass: pass
+    }).fail(function () {
+        alert("Не удалось обновить пароль.")
+    })
+
+    userTr.find("td.user_email").text(email);
+    userTr.find("td.user_active").text(active);
+}

@@ -1,369 +1,462 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>ServiceDesk</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="">
-  <meta name="author" content="">
+    <meta charset="utf-8">
+    <title>ServiceDesk</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-  <!-- Styles -->
-  
-  <link href="/css/bootstrap.css" rel="stylesheet">
-  <style>
-    body {
-      padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-    }
+    <!-- Styles -->
 
-    select.btn-mini {
-      height: auto;
-      line-height: 14px;
-      font-size: 12px;
-      width: 130px;
-    }
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        }
 
-    select.btn {
-      -webkit-appearance: button;
-      -moz-appearance: button;
-      appearance: button;
-      padding-right: 16px;
-    }
+        select.btn-mini {
+            height: auto;
+            line-height: 14px;
+            font-size: 12px;
+            width: 130px;
+        }
 
-    input.btn-mini {
-      height: auto;
-      line-height: 14px;
-      font-size: 12px;
-      width: 115px;
-    }
+        select.btn {
+            -webkit-appearance: button;
+            -moz-appearance: button;
+            appearance: button;
+            padding-right: 16px;
+        }
 
-    .navbar-inverse .brand, .navbar-inverse .nav > li > a {
-      color: #ffffff;
-      text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-    }
+        input.btn-mini {
+            height: auto;
+            line-height: 14px;
+            font-size: 12px;
+            width: 115px;
+        }
 
-    .navbar-inverse .nav .active > a, .navbar-inverse .nav .active > a:hover, .navbar-inverse .nav .active > a:focus {
-      text-decoration: underline;
-      font-size: 120%;
-    }
+        .navbar-inverse .brand, .navbar-inverse .nav > li > a {
+            color: #ffffff;
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+        }
 
-    .table tbody tr.info td {
-      background-color: #ffffff;
-    }
-  </style>
-  <link href="/css/bootstrap-responsive.css" rel="stylesheet">
+        .navbar-inverse .nav .active > a, .navbar-inverse .nav .active > a:hover, .navbar-inverse .nav .active > a:focus {
+            text-decoration: underline;
+            font-size: 120%;
+        }
 
-  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-  <!--[if lt IE 9]>
-  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
-  <script type="text/javascript" src="/js/jquery-1.8.2.min.js"></script>
-  <script type="text/javascript" src="/js/project.js"></script>
+        .table tbody tr.info td {
+            background-color: #ffffff;
+        }
+    </style>
+    <link href="/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="/js/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="/js/project.js"></script>
 
 </head>
 
 <body>
 <div id="all_content" style="display:none;">
-  <!-- NAVBAR -->
-  <div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">
-      <div class="container-fluid" id="nav_container">
-        <a class="brand" href="#" style="color:#0088cc">ServiceDesk</a>
-        <div class="nav-collapse collapse">
-          <ul class="nav" id="main_menu">
-            <li class="active"><a href="#" id="projects">Проекты</a></li>
-            {% if isAdmin %}
-            <li><a href="#" id="users">Пользователи</a></li>
-            <li><a href="#" id="allprojects">Все проекты</a></li>
-            {% endif %}
-            <li><a href="#" id="games">Игры</a></li>
-            <li><a href="#" id="changePassword">Изменить пароль</a></li>
-            <li><a href="#" id="reference">Справка</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
+    <!-- NAVBAR -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container-fluid" id="nav_container">
+                <a class="brand" href="#" style="color:#0088cc">ServiceDesk</a>
+                <div class="nav-collapse collapse">
+                    <ul class="nav" id="main_menu">
+                        {% if not isAdmin %}
+                        <li class="active"><a href="#" id="projects">Проекты пользователя</a></li>
+                        {% endif %}
+                        {% if isAdmin %}
+                        <li><a href="#" id="users">Пользователи</a></li>
+                        <li><a href="#" id="allprojects">Все проекты</a></li>
+                        {% endif %}
+                        <li><a href="#" id="games">Игры</a></li>
+                        <li><a href="#" id="changePassword">Изменить пароль</a></li>
+                        <li><a href="#" id="reference">Справка</a></li>
+                    </ul>
+                    {% if not isAdmin %}
+                    <ul class="nav pull-right">
+                      <li><a href="/logout">LogOut</a></li>
+                    </ul>
+                    {% endif %}
+                </div><!--/.nav-collapse -->
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- The main container -->
-  <div class="container-fluid" id="main_container">
-    <!-- The main table -->
-    <table class="table">
-      <tr class="success">
-        <td>
-          <!-- Projects TAB -->
-          <div class="inner" id="projects_container" style="display:block;">
-            <div id="projects_content" class="content" style="display:block;">
-              <h2 style="line-height:15px;">
-                <small>Проекты</small>
-              </h2>
-              <table class="table table-bordered" id="projects_table">
-                <thead>
-                <tr>
-                  <th><b>Имя</b></th>
-                  <td></td>
-                </tr>				
-                </thead>
-                <tbody>
+    <!-- The main container -->
+    <div class="container-fluid" id="main_container">
+        <!-- The main table -->
+        <table class="table">
+            <tr class="success">
+                <td>
+                    <!-- Projects TAB -->
+                    <div class="inner" id="projects_container" style="display:block;">
+                        <div id="projects_content" class="content" style="display:block;">
+                            <h2 style="line-height:15px;">
+                                <small>Проекты</small>
+                            </h2>
+                            <table class="table table-bordered" id="projects_table">
+                                <thead>
+                                <tr>
+                                    <th><b>Имя</b></th>
+                                </tr>
+                                </thead>
+                                <tbody>
 
-                {% for p in projects %}
-                <tr>
-                  <td style="display:none" class="project_key">{{p.key}}</td>
-                  <td class="project_name">{{ p.name }}</td>
-                </tr>
-                {% endfor %}
+                                {% for p in projects %}
+                                <tr>
+                                    <td style="display:none" class="project_key">{{p.key}}</td>
+                                    <td class="project_name">{{ p.name }}</td>
+                                </tr>
+                                {% endfor %}
 
-                </tbody>
-				
-              </table>
-            </div>
-          </div> <!-- /container -->
-        
-        {% if isAdmin %}
-          <!-- All Projects TAB -->
-          <div id="old_projectname" style="display:None;"></div>
-          <div class="inner" id="allprojects_container" style="display:None;">
-            <div id="allprojects_content" class="content" style="display:block;">
-              <h2 style="line-height:15px;">
-                <small>Список проектов</small>
-              </h2>
-              <table class="table table-bordered" id="allprojects_table">
-                <thead>
-                <tr>
-                  <th><b>Имя проекта</b></th>
-                  <td></td>
-                </tr>
-                <!-- Project Add Form -->
-                <tr class="warning">
-                  <td><input class="btn-mini" id="new_project_name" type="text" style="width:80%;" /></td>
-                  <td><a class="btn-small btn-success" href="#" id='add_project' title="Добавить"><i
-                      class="icon-plus"></i></a></td>
-                </tr>
-                <!-- PROJECT Template -->
-                <tr class="project_template" style="display:None;">
-                    <td style="display:none" class="allproject_key"></td>
-                    <td class="allproject_name"></td>
-                    <td>
-                        <a class="btn-small btn-warning edit_project" href="#" title="Редактировать">
-                            <i class="icon-pencil"></i></a>
-                    </td>
-                </tr>
-				
-				 <!--Edit project - class for clone-->
-				<tr class="project_edit warning" style="display:none">
-				<td class="allproject_key" style="display:none"></td>
-				<td><input type="text" class="btn-mini allproject_name" style="width:80%;"></td>
-				<td>
-                    <a class="btn-small btn-success accept_project_changes" href="#" title="Принять">
-                        <i class="icon-ok"></i></a>
-                    <a class="btn-small btn-danger cancel_project_changes" href="#" title="Отмена">
-                        <i class="icon-remove"></i></a>
-				</td>
-				</tr>
-				
-                </thead>
-                <tbody>
+                                </tbody>
 
-                {% for p in allprojects %}
-                <tr>
-                  <td style="display:none" class="allproject_key">{{p.key}}</td>
-                  <td class="allproject_name">{{ p.name }}</td>
-                  <td>
-                    <a class="btn-small btn-warning edit_project" href="#" title="Редактировать">
-                      <i class="icon-pencil"></i></a>
-                  </td>
-                </tr>
-                {% endfor %}
+                            </table>
+                        </div>
+                    </div> <!-- /container -->
 
-                </tbody>
-				
-              </table>
-            </div> 
-          </div> <!-- ALLPROJECTS /container -->
-          
-          <!-- Users TAB -->
-          <div id="old_email" style="display:None;"></div>
-          <div id="old_active" style="display:None;"></div>
-          <div class="inner" id="users_container" style="display:None;">
-            <div id="users_content" class="content" style="display:block;">
-              <h2 style="line-height:15px;">
-                <small>Список пользователей</small>
-              </h2>
-              <table class="table table-bordered" id="users_table">
-                <thead>
-                <tr>
-                  <th><b>Логин</b></th>
-                  <th><b>E-mail</b></th>
-                  <th><b>Активен</b></th>
-                  <td></td>
-                </tr>
-                <!-- USER Add Form -->
-                <tr class="warning">
-                  <td><input class="btn-mini" id="new_user_name" type="text" style="width:40%;" /></td>
-                  <td><input class="btn-mini" id="new_user_email" type="text" style="width:40%;" /></td>
-                  <td/>
-                  <td><a class="btn-small btn-success" href="#" id='add_user' title="Add"><i
-                      class="icon-plus"></i></a></td>
-                </tr>
-                <!-- USER Template -->
-                <tr class="user_template" style="display:None;">
-                    <td style="display:none" class="user_key"></td>
-                    <td class="user_name"></td>
-                    <td class="user_email"></td>
-                    <td class="user_active">да</td>
-                    <td>
-                        <a class="btn-small btn-warning edit_user" href="#" title="Редактировать">
-                            <i class="icon-pencil"></i></a>
-                    </td>
-                </tr>
-				
-				 <!--Edit user - class for clone-->
-				<tr class="user_edit warning" style="display:none">
-				<td class="user_key" style="display:none"></td>
-				<td class="user_name"></td>
-				<td><input type="text" class="btn-mini user_email"></td>
-				<td><input type="checkbox" class="btn-mini user_active"></td>
-				<td>
-                    <a class="btn-small btn-success accept_user_changes" href="#" title="Принять">
-                        <i class="icon-ok"></i></a>
-                    <a class="btn-small btn-danger cancel_user_changes" href="#" title="Отмена">
-                        <i class="icon-remove"></i></a>
-				</td>
-				</tr>
-				
-                </thead>
-                <tbody>
+                    {% if isAdmin %}
+                    <!-- All Projects TAB -->
+                    <div id="old_projectname" style="display:None;"></div>
+                    <div class="inner" id="allprojects_container" style="display:None;">
+                        <div id="allprojects_content" class="content" style="display:block;">
+                            <h2 style="line-height:15px;">
+                                <small>Список проектов</small>
+                            </h2>
+                            <table class="table table-bordered" id="allprojects_table">
+                                <thead>
+                                <tr>
+                                    <th><b>Имя проекта</b></th>
+                                    <td></td>
+                                </tr>
+                                <!-- Project Add Form -->
+                                <tr class="warning">
+                                    <td><input class="btn-mini" id="new_project_name" type="text" style="width:60%;"/>
+                                    </td>
+                                    <td><a class="btn-small btn-success" href="#" id='add_project' title="Добавить"><i
+                                            class="icon-plus"></i></a></td>
+                                </tr>
+                                <!-- PROJECT Template -->
+                                <tr class="project_template" style="display:None;">
+                                    <td style="display:none" class="allproject_key"></td>
+                                    <td class="allproject_name"></td>
+                                    <td>
+                                        <a class="btn-small btn-warning edit_project" href="#" title="Редактировать">
+                                            <i class="icon-pencil"></i></a>
+                                    </td>
 
-                {% for u in users %}
-                <tr>
-                  <td style="display:none" class="user_key">{{u.key}}</td>
-                  <td class="user_name" onclick="displayAccount(this)">{{ u.username }}</td>
-                  <td class="user_email">{{ u.email }}</td>
-                  {% if u.active %}
-                        <td class="user_active">да</td>
-                  {% else %}
-                        <td class="user_active"></td>
-                  {% endif %}
-                  <td>
-                    <a class="btn-small btn-warning edit_user" href="#" title="Редактировать">
-                      <i class="icon-pencil"></i></a>
-                  </td>
-                </tr>
-                {% endfor %}
+                                </tr>
 
-                </tbody>
-				
-              </table>
-            </div> 
-          </div> <!-- USERS /container -->
-          {% endif %}
+                                <!--Edit project - class for clone-->
+                                <tr class="project_edit warning" style="display:none">
+                                    <td class="allproject_key" style="display:none"></td>
+                                    <td><input type="text" class="btn-mini allproject_name" style="width:60%;"></td>
+                                    </td>
+                                    <td>
+                                        <a class="btn-small btn-success accept_project_changes" href="#"
+                                           title="Принять">
+                                            <i class="icon-ok"></i></a>
+                                        <a class="btn-small btn-danger cancel_project_changes" href="#" title="Отмена">
+                                            <i class="icon-remove"></i></a>
+                                    </td>
+                                    <td>
+                                        Логин пользователя: <input type="text" class="btn-mini assigned_user_name"
+                                                                   style="width:40%;">
+                                        <a class="btn-small btn-success" href="#" id=
+                                                'assign_project_to_user' title="Добавить в проекты пользователя"><i
+                                                class="icon-plus"></i></a></td>
 
-          <!-- GAMES TAB -->
-          <div class="inner" id="games_container" style="display:none;">
-            <div id="games_content" class="content" style="display:block;">
-              <h2 style="line-height:15px;">
-                <small>Игры</small>
-              </h2>
+                                </tr>
 
-              <table class="table-bordered" style="width:900px;" id="ph">
-               	<tr>
-					<td><button type="button" onclick="loadGame('/games/minesweeper.html')">Сапер</button></td>
-				</tr>
-				<tr>
-					<td><button type="button" onclick="loadGame('/games/hanoi.html')">Ханойская башня</button></td>
-				</tr>		
-				<tr>
-					<td><button type="button" onclick="loadGame('/games/2048.html')">2048</button></td>
-				</tr>	
-                <tr>
-					<td><button type="button" onclick="loadGame('/games/snake.html')">Питон</button></td>
-				</tr>	
-              </table>
-			  <div id="game">Выберите игру</div>
-            </div>
-          </div>
+                                </thead>
+                                <tbody>
 
-          <!-- CHANGEPASSWORD TAB -->
-          <div class="inner" id="changePassword_container" style="display:none;">
-            <div id="changepassword_content" class="content" style="display:block;">
-              <h2 style="line-height:15px;">
-                <small>Изменить пароль</small>
-              </h2>
-              <table class="table-bordered" id="changepassword_table">
-                <thead>
-                <tr>
-                  <th><b>Старый пароль</b></th>
-                  <td><input class="btn-mini" id="old_password_input" type="password" style="width:90%;" /></td>
-                </tr>
-                </thead>
-                <thead>
-                <tr>
-                  <th><b>Новый пароль</b></th>
-                  <td><input class="btn-mini" id="new_password_input" type="password" style="width:90%;" /></td>
-                </tr>
-                <tr>
-                  <th><b>Подтверждение</b></th>
-                  <td><input class="btn-mini" id="accept_password_input" type="password" style="width:90%;" /></td>
-                </tr>
-                </thead>
-              </table>
-              <button type="button" onclick="saveNewPassword()">Сохранить</button>
-              <button type="button" onclick="cancelNewPassword()">Отмена</button>
-            </div>
-          </div>
+                                {% for p in allprojects %}
+                                <tr>
+                                    <td style="display:none" class="allproject_key">{{p.key}}</td>
+                                    <td class="allproject_name">{{ p.name }}</td>
+                                    <td>
+                                        <a class="btn-small btn-warning edit_project" href="#" title="Редактировать">
+                                            <i class="icon-pencil"></i></a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
 
-          <!-- Account -->
-          <div class="inner" id="account_container" style="display:None;">
-            <div id="account_content" class="content" style="display:block;">
-              <h2 style="line-height:15px;">
-                <small>Личный кабинет</small>
-              </h2>
-              <table class="table-bordered" id="account_table">
-                <thead>
-                <tr>
-                  <th><b>Логин</b></th>
-                  <th id="account_name"></th>
-                </tr>
-                </thead>
-                <thead>
-                <tr>
-                  <th><b>Пароль</b></th>
-                  <td><input class="btn-mini" id="account_password_input" type="text" style="width:90%;" /></td>
-                </tr>
-                <tr>
-                  <th><b>E-mail</b></th>
-                  <td><input class="btn-mini" id="account_email_input" type="text" style="width:90%;" /></td>
-                </tr>
-                <tr>
-                  <th><b>Активность</b></th>
-                  <td><input type="checkbox" class="btn-mini" id="account_active_input" style="width:90%;" /></td>
-                </tr>
-                </thead>
-                <tr>
-					<td><button type="button" onclick="accountSave(this)">Сохранить</button></td>
-				</tr>
-              </table>
-            </div>
-          </div> <!-- ACCOUNT /container -->
+                                </tbody>
 
-          <!-- Reference TAB -->
-          <div class="inner" id="reference_container" style="display:none;">
-            <div id="reference_content" class="content" style="display:block;">
-              <h2 style="line-height:15px;">
-                <small>Краткая справка.</small>
-              </h2>
-              <p>Тыкайте в кнопки и смотрите, что получается</p>
-            </div>
-          </div>
-        </td>
-      </tr>
+                            </table>
+                        </div>
+                    </div> <!-- ALLPROJECTS /container -->
+
+                    <!-- Users TAB -->
+                    <div id="old_fullname" style="display:None;"></div>
+                    <div id="old_email" style="display:None;"></div>
+                    <div id="old_active" style="display:None;"></div>
+                    <div class="inner" id="users_container" style="display:None;">
+                        <div id="users_content" class="content" style="display:block;">
+                            <h2 style="line-height:15px;">
+                                <small>Список пользователей</small>
+                            </h2>
+                            <table class="table table-bordered" id="users_table">
+                                <thead>
+                                <tr>
+                                    <th><b>ФИО</b></th>
+                                    <th><b>Логин</b></th>
+                                    <th><b>E-mail</b></th>
+                                    <th><b>Активен</b></th>
+                                    <td></td>
+                                </tr>
+                                <!-- USER Add Form -->
+                                <tr class="warning">
+                                    <td><input class="btn-mini" id="new_user_full_name" type="text" style="width:60%;"/></td>
+                                    <td><input class="btn-mini" id="new_user_name" type="text" style="width:40%;"/></td>
+                                    <td><input class="btn-mini" id="new_user_email" type="text" style="width:60%;"/></td>
+                                    <td/>
+                                    <td><a class="btn-small btn-success" href="#" id='add_user' title="Add"><i
+                                            class="icon-plus"></i></a></td>
+                                </tr>
+                                <!-- USER Template -->
+                                <tr class="user_template" style="display:None;">
+                                    <td style="display:none" class="user_key"></td>
+                                    <td class="user_full_name"></td>
+                                    <td class="user_name"></td>
+                                    <td class="user_email"></td>
+                                    <td class="user_active">да</td>
+                                    <td onclick="displayAccount(this)">
+                                        <a class="btn-small btn-warning edit_user" href="#" title="Редактировать">
+                                            <i class="icon-pencil"></i></a>
+                                    </td>
+                                </tr>
+                                        
+                                <!--Edit user - class for clone-->
+                                <tr class="user_edit warning" style="display:none">
+                                    <td class="user_key" style="display:none"></td>
+                                    <td><input type="text" class="btn-mini user_full_name"
+                                               style="width:60%;"></td>
+                                    <td class="user_name"></td>
+                                    <td><input type="text" class="btn-mini user_email"
+                                               style="width:60%;"></td>
+                                    <td><input type="checkbox" class="btn-mini user_active"></td>
+                                    <td>
+                                        <a class="btn-small btn-success accept_user_changes" href="#" title="Принять">
+                                            <i class="icon-ok"></i></a>
+                                        <a class="btn-small btn-danger cancel_user_changes" href="#" title="Отмена">
+                                            <i class="icon-remove"></i></a>
+                                    </td>
+                                    
+                                </tr>
+
+                                </thead>
+                                <tbody id="user_tbody">
+
+                                {% for u in users %}
+                                <tr>
+                                    <td style="display:none" class="user_key">{{u.key}}</td>
+                                    <td class="user_full_name">{{ u.fullname }}</td>
+                                    <td class="user_name">{{ u.username }}</td>
+                                    <td class="user_email">{{ u.email }}</td>
+                                    {% if u.active %}
+                                    <td class="user_active">да</td>
+                                    {% else %}
+                                    <td class="user_active"></td>
+                                    {% endif %}
+                                    <td onclick="displayAccount(this)">
+                                        <a class="btn-small btn-warning edit_user" href="#" title="Редактировать">
+                                            <i class="icon-pencil"></i></a>
+                                    </td>
+                                    
+                                </tr>
+                                {% endfor %}
+
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div> <!-- USERS /container -->
+                    {% endif %}
+
+                    <!-- GAMES TAB -->
+                    <div class="inner" id="games_container" style="display:none;">
+                        <div id="games_content" class="content" style="display:block;">
+                            <h2 style="line-height:15px;">
+                                <small>Игры</small>
+                            </h2>
+
+                            <table class="table-bordered" style="width:900px;" id="ph">
+                                <tr>
+                                    <td>
+                                        <button type="button" onclick="loadGame('/games/minesweeper.html')">Сапер
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <button type="button" onclick="loadGame('/games/hanoi.html')">Ханойская башня
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <button type="button" onclick="loadGame('/games/2048.html')">2048</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <button type="button" onclick="loadGame('/games/snake.html')">Питон</button>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div id="game">Выберите игру</div>
+                        </div>
+                    </div>
+
+                    <!-- CHANGEPASSWORD TAB -->
+                    <div class="inner" id="changePassword_container" style="display:none;">
+                        <div id="changepassword_content" class="content" style="display:block;">
+                            <h2 style="line-height:15px;">
+                                <small>Изменить пароль</small>
+                            </h2>
+                            <table class="table-bordered" id="changepassword_table">
+                                <thead>
+                                <tr>
+                                    <th><b>Старый пароль</b></th>
+                                    <td><input class="btn-mini" id="old_password_input" type="password"
+                                               style="width:90%;"/></td>
+                                </tr>
+                                </thead>
+                                <thead>
+                                <tr>
+                                    <th><b>Новый пароль</b></th>
+                                    <td><input class="btn-mini" id="new_password_input" type="password"
+                                               style="width:90%;"/></td>
+                                </tr>
+                                <tr>
+                                    <th><b>Подтверждение</b></th>
+                                    <td><input class="btn-mini" id="accept_password_input" type="password"
+                                               style="width:90%;"/></td>
+                                </tr>
+                                </thead>
+                            </table>
+                            <button type="button" onclick="saveNewPassword()">Сохранить</button>
+                            <button type="button" onclick="cancelNewPassword()">Отмена</button>
+                        </div>
+                    </div>
+
+                    <!-- Account -->
+                    <div class="inner" id="account_container" style="display:None;">
+                        <div id="account_content" class="content" style="display:block;">
+                            <h2 style="line-height:15px;">
+                                <small>Личный кабинет</small>
+                            </h2>
+                            <table class="table-bordered" id="account_table">
+                                <tr>
+                                    <th><b>ФИО</b></th>
+                                    <td><input class="btn-mini" id="account_fullname_input" type="text" style="width:90%;"/></td>
+                                </tr>
+                                
+                                <tr>
+                                    <th><b>Логин</b></th>
+                                    <th id="account_name"></th>
+                                </tr>
+                                
+                                <tr>
+                                    <th><b>Пароль</b></th>
+                                    <td><input class="btn-mini" id="account_password_input" type="text"
+                                               style="width:90%;"/></td>
+                                </tr>
+                                <tr>
+                                    <th><b>E-mail</b></th>
+                                    <td><input class="btn-mini" id="account_email_input" type="text"
+                                               style="width:90%;"/></td>
+                                </tr>
+                                <tr>
+                                    <th><b>Активность</b></th>
+                                    <td><input type="checkbox" class="btn-mini" id="account_active_input"
+                                               style="width:90%;"/></td>
+                                </tr>
+                                <tr>
+                                    <th><b>Проекты</b></th>
+                                    <td class="user_projects">
+                                        <table class="table table-bordered" id="projects_table">
+                                            <!-- PROJECT Template -->
+                                            <tr class="project_template" style="display:none">
+                                                <td style="display:none" class="project_key"></td>
+                                                <td class="project_name"></td>
+                                                <td onclick="deleteUserProject(this)" class="display:none"><a class="btn-small btn-warning delete_user_project" href="#" title="Удалить"><i class="icon-remove"></i></a>
+                                                </td>
+                                                <td onclick="assignUserProject(this)"><a class="btn-small btn-success assign_user_project" href="#" title="Добавить">
+                                                <i class="icon-plus"></i></a>
+                                                </td>
+                                            </tr>
+                                            <tbody id="account_projects">
+                                                {% for a in allprojects %}
+                                                <tr class="project">
+                                                    <td style="display:none" class="project_key">
+                                                        {{ a.key }}
+                                                    </td>
+                                                    <td class="project_name">
+                                                        {{ a.name }}
+                                                    </td>
+                                                    {% for p in userprojects %}
+                                                    {% if a.key == p.project_key.key %}
+                                                    <td style="display:none" class="p_user_key">
+                                                            {{ p.user_key.key }}
+                                                    </td>
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                    
+                                                    <td onclick="deleteUserProject(this)"><a class="btn-small btn-warning delete_user_project" href="#" title="Удалить"><i class="icon-remove"></i></a>
+                                                        </td>
+                                                    <td onclick="assignUserProject(this)"><a class="btn-small btn-success assign_user_project" href="#" title="Добавить">
+                                                    <i class="icon-plus"></i></a>
+                                                    </td> 
+                                                    
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>    
+                                    
+                                
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <button type="button" onclick="accountSave(this)">Сохранить</button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div> <!-- ACCOUNT /container -->
+
+                    <!-- Reference TAB -->
+                    <div class="inner" id="reference_container" style="display:none;">
+                        <div id="reference_content" class="content" style="display:block;">
+                            <h2 style="line-height:15px;">
+                                <small>Краткая справка.</small>
+                            </h2>
+                            <p>Тыкайте в кнопки и смотрите, что получается</p>
+                        </div>
+                    </div>
+                </td>
+            </tr>
 
 
-    </table>
-  </div> <!-- /container -->
+        </table>
+    </div> <!-- /container -->
 
-  <div class="container-fluid">
-    <small>&copy; Copyright 2017 Web Applications Development Course, SPBU</small>
-  </div>
+    <div class="container-fluid">
+        <small>&copy; Copyright 2017 Web Applications Development Course, SPBU</small>
+    </div>
 
 </div>
 </body>

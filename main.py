@@ -38,7 +38,8 @@ class MainPage(webapp2.RequestHandler):
                 'projects': data.getUserProjects(user),
                 'allprojects': data.Project.all(),
                 'isAdmin': users.is_current_user_admin(),
-                'users': myusers.MyUser.all()
+                'users': myusers.MyUser.all(),
+                # 'requests': data.getUserRequests()
             }
             path = os.path.join(os.path.dirname(__file__), 'project.html')
             self.response.out.write(template.render(path, template_values))
@@ -176,6 +177,39 @@ class DeleteUserProject(webapp2.RequestHandler):
             return
         self.response.out.write('OK')        
 
+class RequestList(webapp2.RequestHandler):
+    def get(self):
+        name = self.request.get('name')
+        key = self.request.get('project_key')
+        requests = data.getRequests(key)
+        variables = {'page_name': name,
+                     'requests': requests}
+        # variables = {}
+        path = os.path.join(os.path.dirname(__file__), 'request.html')
+        # print(name)
+        # print("asdasdasd")
+        self.response.out.write(template.render(path, variables))
+
+    def post(self):
+        name = self.request.get('name')
+        variables = {'page_name': name}
+        path = os.path.join(os.path.dirname(__file__), 'request.html')
+        # print(name)
+        # print("asdasdasd")
+        self.response.out.write(template.render(path, variables))
+
+
+class AddRequest(webapp2.RequestHandler):
+    def get(self):
+        user_name = self.request.get('user_name')
+        project_key = self.request.get('project_key')
+        res = data.addUserProject(user_name, project_key)
+        if res is None:
+            self.error(400)
+        else:
+            self.response.out.write(str(res))
+            return
+
 application = webapp2.WSGIApplication([('/', MainPage),
                                        ('/login', myusers.Login),
                                        ('/logout', myusers.DoLogout),
@@ -187,5 +221,7 @@ application = webapp2.WSGIApplication([('/', MainPage),
                                        ('/get_user_password/', GetUserPassword),
                                        ('/update_curr_user_pass/', UpdateCurrUserPass),
                                        ('/add_user_project/', AddUserProject),
-                                       ('/delete_user_project/', DeleteUserProject)],
+                                       ('/delete_user_project/', DeleteUserProject),
+                                       ('/request_for_project/', RequestList),
+                                       ('/add_request/', AddRequest)],
                                       debug=True)

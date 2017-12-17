@@ -344,6 +344,12 @@ $(document).ready(function () {
         })
     });
 
+//    $(".table table-bordered").find("project_name").click(function (e)) {
+//        e.preventDefault();
+//
+//        var name = $thisTr.find("project_name").text();
+//    }
+
     // after everything is loaded, display the page
     $("#all_content").show();
 });
@@ -459,7 +465,51 @@ function assignUserProject(elem) {
         type: "get"
     });     
 } 
+function save_request(elem) {
+    var $questTr = $("#account_container");
+    var username = $projTr.find("th#account_name").text();
+    var project_key = $(elem).parent().find("td.project_key").text();
+    var user_key = $("#account_container").data("user_key");
 
+    jQuery.ajax({
+        url: '/add_request/?project_key=' + project_key,
+        success: function (data_) {
+            if (data_ !== "True") {
+                alert("У пользователя уже есть эта заявка.");
+            }
+            else {
+                $(elem).parent().append('<td style="display:none" class="p_user_key">' + project_keyproject_reqiuest + "</td>");
+                $(elem).parent().find("a.assign_project_reqiuest").attr("style", "display:none");
+                $(elem).parent().find("a.delete_project_reqiuest").removeAttr("style");
+                $projTr.find("input.new_user_project_name").val("");
+                //alert('Успех!');
+                location.reload;
+            }
+        },
+        async: false,
+        type: "get"
+    });
+}
+
+$('#save_request').click(function (e) {
+    e.preventDefault();
+    var request_name = $(this).siblings('input.assigned_request_name').val();
+    var desr = $(this).parent().siblings("input.desription").text();
+
+    jQuery.ajax({
+        url: '/add_request/?' + 'project_key=' + projectKey,
+        success: function (data) {
+            if (data !== "True") {
+                alert("У пользователя уже есть этот проект.");
+            }
+            else {
+                alert('Успех!');
+            }
+        },
+        async: false,
+        type: "get"
+    });
+});
 
 function deleteUserProject(elem) {
     var $thisTr = $(elem).parent();

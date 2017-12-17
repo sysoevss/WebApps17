@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ServiceDesk</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Styles -->
+
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        }
+        #zatemnenie {
+           background: rgba(102, 102, 102, 0.5);
+           width: 100%;
+           height: 100%;
+           position: absolute;
+           top: 0;
+           left: 0;
+           display: none;
+        }
+        #okno {
+          width: 300px;
+          height: 250px;
+          text-align: center;
+          padding: 15px;
+          border: 3px solid #696969;
+          color: #696969;
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          margin: auto;
+          background: #fff;
+        }
+        #zatemnenie:target {display: block;}
+
+        select.btn-mini {
+            height: auto;
+            line-height: 14px;
+            font-size: 12px;
+            width: 130px;
+        }
+
+        select.btn {
+            -webkit-appearance: button;
+            -moz-appearance: button;
+            appearance: button;
+            padding-right: 16px;
+        }
+
+        input.btn-mini {
+            height: auto;
+            line-height: 14px;
+            font-size: 12px;
+            width: 115px;
+        }
+
+        .navbar-inverse .brand, .navbar-inverse .nav > li > a {
+            color: #ffffff;
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+        }
+
+        .navbar-inverse .nav .active > a, .navbar-inverse .nav .active > a:hover, .navbar-inverse .nav .active > a:focus {
+            text-decoration: underline;
+            font-size: 120%;
+        }
+
+        .table tbody tr.info td {
+            background-color: #ffffff;
+        }
+    </style>
+    <link href="/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="/js/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="/js/project.js"></script>
+
+</head>
+<body>
+<div id="all_content" style="display:none;">
+
+
+    <!-- NAVBAR -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container-fluid" id="nav_container">
+                <a class="brand" href="#" style="color:#0088cc">ServiceDesk</a>
+                <div class="nav-collapse collapse">
+                </div><!--/.nav-collapse -->
+            </div>
+        </div>
+    </div>
+        <!-- The main container -->
+    <div class="container-fluid" id="main_container">
+                <!-- The main table -->
+        <table class="table">
+            <tr class="success">
+                <td>
+                    <!-- Projects TAB -->
+                    <div class="inner" id="projects_container" style="display:block;">
+                        <div id="projects_content" class="content" style="display:block;">
+                            <h2 style="line-height:15px;">
+                                <small>Проект Х</small>
+                            </h2>
+                            <table class="table table-bordered" id="projects_table">
+
+                                <thead>
+                                <tr>
+                                    <th><b>Заявки</b></th>
+                                </tr>
+                                </thead>
+
+                                    <div id="zatemnenie">
+                                        <form action="save_request" method ="get">
+                                            <div id="okno">
+                                                <h3>Новая заявка<br></h3>
+                                                <p><input type=search placeholder="Введите имя заявки" class="assigned_request_name"></p>
+                                                <p><input type=search placeholder="Введите описание заявки" class="desription"></p>
+                                                <p><input type="submit" value="Сохранить" id="save_request">
+                                                    <input type = "reset" hvalue="Отмена">
+                                                </p>
+                                                <a href="#" class="close"> Отмена </a>
+                                            </div>
+                                        </form>
+                                    </div>
+                                <thead>
+                                <tr>
+                                    <th><b><a href ="#zatemnenie"><button>Добавить</button></a></b></th>
+                                </tr>
+                                </thead>
+                                <tr>
+                                    <th>Номер</th>
+                                    <th>Название</th>
+                                    <th>Исполнитель</th>
+                                    <th>Статус</th>
+                                </tr>
+                                </table>
+
+                                {% for r in requests %}
+                                <tr>
+                                    <td style="display:none" class="request_key">{{r.key}}</td>
+                                    <td class="request_number" id="number">{{ r.number }}</td>
+                                    <td class="request_name" id="name">{{ r.name }}</td>
+                                    <td class="request_performer" id="performer">{{ r.performer }}</td>
+                                    <td class="request_state" id="state">{{ r.state }}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>

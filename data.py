@@ -23,7 +23,6 @@ def force_unicode(string):
 class Project(db.Model):
     name = db.StringProperty(multiline=False)
 
-
 def getProjectsList(user):
     return None
 
@@ -46,6 +45,7 @@ def addProject(name):
 class UserProject(db.Model):
     user_key = db.ReferenceProperty(MyUser)
     project_key = db.ReferenceProperty(Project)
+    number = 0
 
 
 def addUserProject(user_name, project_key_str):
@@ -89,3 +89,29 @@ def getUserProjects(user):
     query = UserProject.all().filter('user_key = ', user.key())
     return [user_project.project_key for user_project in query]
     # return [Project.get(user_project.project_key) for user_project in query]
+
+class Request(db.Model):
+    number = int
+    name = db.StringProperty()
+    description = db.StringProperty(multiline=True)
+    state = int
+    perfomer = db.ReferenceProperty()  #???
+
+def addRequests(project_key, name, description):
+    print("log")
+    req = Request(parent=project_key)
+    req.name = name
+    req.description = description
+    req.perfomer = ""
+    req.state = 1
+    req.number = Request(ancestor = project_key).all().length + 1
+    req.put()
+
+    Project.set(project_key).number += 1
+    return True
+
+def getRequests(project_key):
+    if project_key is None:
+        return []
+    query = Request(ancestor = project_key).all()
+    return query

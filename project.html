@@ -114,7 +114,10 @@
                                 {% for p in projects %}
                                 <tr>
                                     <td style="display:none" class="project_key">{{p.key}}</td>
-                                    <td class="project_name">{{ p.name }}</td>
+                                    <td class="project_name" id="name">
+                                        <!--<a href={{p.name}} target="_blank">{{ p.name }}</a>-->
+                                        <a href="/request_for_project/?project_key={{p.key}}&name={{p.name}}" target="_blank">{{ p.name }}</a>
+                                    </td>
                                 </tr>
                                 {% endfor %}
 
